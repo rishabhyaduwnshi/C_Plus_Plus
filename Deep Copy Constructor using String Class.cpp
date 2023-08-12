@@ -45,14 +45,14 @@ int main() {
     String str1 = "Rishabh";
     String str2 = str1;
 
-    cout << "before calling change function \n";
+    cout << "before calling change function \n"<<endl;
 
     str1.print();
     str2.print();
 
     str2.change();
 
-    cout << "after calling change function \n";
+    cout << "\nafter calling change function \n"<<endl;
 
     str1.print();
     str2.print();
