@@ -1,48 +1,56 @@
-#include<bits/stdc++.h>
-using namespace std;
+// Multithreading Introduction.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+#include <chrono>
+#include <thread>
 
 typedef unsigned long long ull;
 
-ull odd_sum = 0;
 ull even_sum = 0;
+ull odd_sum = 0;
 
-void evenSum(ull start, ull end)
+void find_odd_sum(ull start, ull end)
 {
-    for(int i=start;i<end;i++)
+    for (ull i = start; i < end; i++)
     {
-        if(i%2 == 0)
-            even_sum += i;
+        if (i % 2 == 1)
+            odd_sum += i;
     }
 }
 
-void oddSum(ull start, ull end)
+
+void find_even_sum(ull start, ull end)
 {
-    for(int i=start;i<end;i++)
+    for (ull i = start; i < end; i++)
     {
-        if(i%2 != 0)
-            odd_sum += i;
+        if (i % 2 == 0)
+            even_sum += i;
     }
 }
 
 int main()
 {
-    int start = 0;
-    int end = 1000000000;
-    
-    //starting time 
-    auto start_time = chrono::high_resolution_clock::now();
+    ull start = 0;
+    ull end = 1000000000;
 
-    evenSum(start,end);
-    oddSum(start,end);
+    //get the time before starting the calculation
+    auto start_time = std::chrono::high_resolution_clock::now();
     
-    //ending time
-    auto end_time = chrono::high_resolution_clock::now();
-    
-    //duration
-    auto duration = duration_cast<chrono::duration<double>>(end_time - start_time);
-    
-    cout<<"even_sum is "<<even_sum<<endl;
-    cout<<"odd_sum is "<<odd_sum<<endl;
-    cout << "Time elapsed: " <<duration.count()<<"seconds"<<endl;
-    
+    find_odd_sum(start, end);
+    find_even_sum(start, end);
+
+    //get the time after completing the calculation
+    auto end_time = std::chrono::high_resolution_clock::now();
+
+    //find the duration
+    auto duration = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time);
+
+    //even & odd sum results
+    std::cout <<"Odd sum is : " << odd_sum <<std::endl;
+    std::cout <<"Even sum is : " << even_sum << std::endl;
+
+    //print the duration
+    std::cout <<"Time required for this compuation was : " << duration.count() << std::endl;
+
 }
