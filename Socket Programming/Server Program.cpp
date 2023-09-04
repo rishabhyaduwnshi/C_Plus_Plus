@@ -10,7 +10,7 @@ int main()
 
 	int nRet = 0;
 
-	//Initialise the WSA Varibales for socket programming on Windows
+	//Initialise the WSA Variables for socket programming on Windows
 	WSADATA ws;
 	if(WSAStartup(MAKEWORD(2,2),&ws) < 0)
 		std::cout << "WSA Initialisation Failed\n";
