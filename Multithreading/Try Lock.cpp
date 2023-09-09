@@ -1,35 +1,64 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <chrono>
 
-int number = 0;
-std::mutex my_mutex;
+int X = 0;
+int Y = 0;
 
-void incrementNumber()
+std::mutex mutex_m1, mutex_m2;
+
+void doSomeWork(int second)
 {
-	for(int i=0;i<100000;i++)
+	std::this_thread::sleep_for(std::chrono::seconds(second));
+}
+
+void incrementXY(int &XorY, std::mutex &m, const char* desc)
+{
+	for (int i = 0; i < 5; i++)
 	{
-		if (my_mutex.try_lock())
+		m.lock();
+		XorY++;
+		std::cout << desc << XorY ;
+		m.unlock();
+		doSomeWork(1);
+	}
+}
+
+void consumeXY()
+{
+	int use_count = 5;
+	int XplusY = 0;
+	while (true)
+	{
+		int lock_result = std::try_lock(mutex_m1, mutex_m2);
+		if (lock_result == -1)
 		{
-     /* 
-          This number might be equal to 200000 because some of the iterations might be skipped,
-          If we had used lock instead of try_lock, in that case, it would have been 200000 for sure
-      */
-			number++;
-			my_mutex.unlock();
+			if (X != 0 && Y != 0)
+			{
+				use_count--;
+				XplusY += X + Y;
+				X = 0;
+				Y = 0;
+				std::cout <<" XplusY : "<< XplusY << std::endl;
+			}
+
+			mutex_m1.unlock();
+			mutex_m2.unlock();
+
+			if (use_count == 0)
+				break;
 		}
 	}
-	
 }
 
 int main()
 {
-	std::thread t1(incrementNumber);
-	std::thread t2(incrementNumber);
+	std::thread t1(incrementXY, std::ref(X), std::ref(mutex_m1), "X");
+	std::thread t2(incrementXY, std::ref(Y), std::ref(mutex_m2), "Y");
+	std::thread t3(consumeXY);
 
 	t1.join();
 	t2.join();
-
-	std::cout << number << std::endl;
-
+	t3.join();
 }
